@@ -16,7 +16,7 @@ And because we have absolutely no idea how to write a programming language, we'r
 Add the driver to your project using composer:
 
 ```php
-composer require circle/doctrine-rest-driver
+composer require rickj/doctrine-rest-driver
 ```
 
 Change the following doctrine dbal configuration entries:
