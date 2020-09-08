@@ -1,11 +1,11 @@
 {
-  "name": "circle/doctrine-rest-driver",
+  "name": "rickj/doctrine-rest-driver",
   "description": "Use a REST API as if it was your local database",
   "type": "library",
   "authors": [
     {
-      "name": "Circle",
-      "email": "hi@circle.ai"
+      "name": "Rick Jelier",
+      "email": "rickjelier@gmail.com"
     }
   ],
   "keywords": [
@@ -47,6 +47,6 @@
     "doctrine/dbal": "2.*",
     "greenlion/php-sql-parser": "^4.0",
     "doctrine/orm": "2.*",
-    "ci/restclientbundle": "^2.0.2"
+    "rickj/restclientbundle": "^2.0.2"
   }
 }
