@@ -28,7 +28,8 @@ use Circle\DoctrineRestDriver\MetaData;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class HttpQuery {
+class HttpQuery
+{
 
     /**
      * Creates a http query string by using the WHERE
@@ -40,16 +41,27 @@ class HttpQuery {
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, array $options = []) {
+    public static function create(array $tokens, array $options = [])
+    {
         HashMap::assert($tokens, 'tokens');
 
-        $operation = SqlOperation::create($tokens);
-        if ($operation !== SqlOperations::SELECT) return null;
+        //Elementos básicos
+        $baseData = [
+            'table='.Table::create($tokens),
+            'database='.$options['password']
+        ];
 
-        $query = implode('&', array_filter([
-            self::createConditionals($tokens),
-            self::createPagination($tokens, $options),
-        ]));
+
+        $operation = SqlOperation::create($tokens);
+        $options = $options['driverOptions'];
+
+        $query = implode('&', array_merge(
+            $baseData,
+            (($operation !== SqlOperations::SELECT) ? [] : array_filter([
+                self::createConditionals($tokens),
+                self::createPagination($tokens, $options),
+            ]))
+        ));
 
         return $query;
     }
@@ -62,14 +74,15 @@ class HttpQuery {
      * 
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function createConditionals(array $tokens) {
-        if(!isset($tokens['WHERE'])) return '';
+    public static function createConditionals(array $tokens)
+    {
+        if (!isset($tokens['WHERE'])) return '';
 
         $tableAlias = Table::alias($tokens);
         $primaryKeyColumn = sprintf('%s.%s', $tableAlias, Identifier::column($tokens, new MetaData));
 
         // Get WHERE conditions as string including table alias and primary key column if present
-        $sqlWhereString = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
+        $sqlWhereString = array_reduce($tokens['WHERE'], function ($query, $token) use ($tableAlias) {
             $baseExpr = str_replace(['"', '\''], '', str_replace('OR', '|', str_replace('AND', '&', $token['base_expr'])));
 
             return $query . ($token['expr_type'] == 'const' ? urlencode($baseExpr) : $baseExpr);
@@ -88,8 +101,9 @@ class HttpQuery {
      * 
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function createPagination(array $tokens, array $options) {
-        if(!isset($options['pagination_as_query']) || !$options['pagination_as_query']) return '';
+    public static function createPagination(array $tokens, array $options)
+    {
+        if (!isset($options['pagination_as_query']) || !$options['pagination_as_query']) return '';
 
         $perPageParam = isset($options['per_page_param']) ? $options['per_page_param'] : PaginationQuery::DEFAULT_PER_PAGE_PARAM;
         $pageParam    = isset($options['page_param']) ? $options['page_param'] : PaginationQuery::DEFAULT_PAGE_PARAM;
