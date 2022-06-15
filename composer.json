@@ -44,7 +44,7 @@
   },
   "require": {
     "php": ">=5.5",
-    "doctrine/dbal": "3.*",
+    "doctrine/dbal": "2.*",
     "greenlion/php-sql-parser": "^4.0",
     "doctrine/orm": "2.*",
     "rickj/restclientbundle": "^2.0.2"
