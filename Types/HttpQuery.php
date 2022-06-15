@@ -47,12 +47,18 @@ class HttpQuery
 
         //Elementos básicos
         $baseData = [
-            'table='.Table::create($tokens),
-            'database='.$options['password']
+            'table=' . Table::create($tokens),
+            'database=' . $options['password']
         ];
-
-
         $operation = SqlOperation::create($tokens);
+        if ($operation === SqlOperations::SELECT) {
+            $selectFields = [];
+            foreach($tokens["SELECT"] as $selectField){
+                $selectFields[]=$selectField["no_quotes"]["parts"][1];
+            }
+            $baseData[] = "fields=".json_encode($selectFields);
+        }
+
         $options = $options['driverOptions'];
 
         $query = implode('&', array_merge(
