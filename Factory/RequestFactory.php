@@ -50,7 +50,7 @@ class RequestFactory {
     public function createOne($method, array $tokens, array $options, DataSource $annotation = null) {
         return new Request([
             'method'              => HttpMethod::create($method, $annotation),
-            'url'                 => Url::createFromTokens($tokens, $options['host'], $annotation),
+            'url'                 => $options['host'],
             'curlOptions'         => CurlOptions::create(array_merge($options['driverOptions'], HttpHeader::create($options['driverOptions'], $tokens))),
             'query'               => HttpQuery::create($tokens, $options),
             'payload'             => Payload::create($tokens, $options),
