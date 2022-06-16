@@ -18,10 +18,11 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\MetaData;
 use PHPSQLParser\PHPSQLParser;
+use Circle\DoctrineRestDriver\MetaData;
 use Symfony\Component\HttpFoundation\Response;
+use Circle\DoctrineRestDriver\Enums\HttpMethods;
+use Circle\DoctrineRestDriver\Exceptions\DoctrineRestDriverException;
 
 /**
  * Maps the response content of any query to a valid
@@ -104,8 +105,11 @@ class Result {
         if($responseCode >= 400 && $responseCode < 600) return [];
         if ($requestMethod === HttpMethods::DELETE)     return [];
         //Si la respuest del erp no tiene status true, error
-        if(!isset($content['status']) || !isset($content['content']) || $content['status'] !== false){
-            return [];
+        if(!isset($content['status']) || !isset($content['content'])){
+            throw new DoctrineRestDriverException("El json recibido no continene status o content");
+        }
+        if($content['status'] == false){
+            throw new DoctrineRestDriverException("El status en el json recibido es false");
         }
         $content = $content['content'];
         $result = $requestMethod === HttpMethods::GET ? SelectResult::create($tokens, $content) : $content;
