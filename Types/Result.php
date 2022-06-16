@@ -103,6 +103,11 @@ class Result {
     private function createResult(array $tokens, $requestMethod, $responseCode, array $content = null) {
         if($responseCode >= 400 && $responseCode < 600) return [];
         if ($requestMethod === HttpMethods::DELETE)     return [];
+        //Si la respuest del erp no tiene status true, error
+        if(!isset($content['status']) || !isset($content['content']) || $content['status'] !== false){
+            return [];
+        }
+        $content = $content['content'];
         $result = $requestMethod === HttpMethods::GET ? SelectResult::create($tokens, $content) : $content;
         krsort($result);
 

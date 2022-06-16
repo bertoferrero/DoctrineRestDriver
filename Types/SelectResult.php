@@ -38,6 +38,6 @@ class SelectResult {
      */
     public static function create(array $tokens, $content) {
         if (empty($content) || !is_array($content)) return [];
-        return empty($content[0]) ? SelectSingleResult::create($tokens, $content) : SelectAllResult::create($tokens, $content);
+        return count($content) == 1 ? SelectSingleResult::create($tokens, $content[0]) : SelectAllResult::create($tokens, $content);
     }
 }
